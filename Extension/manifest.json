@@ -2,8 +2,11 @@
   "manifest_version": 3,
   "name": "FocusTube",
   "version": "4.0",
-  "permissions": ["storage"],
-  "host_permissions": ["https://www.youtube.com/*"],
+  "permissions": ["storage" ],
+  "host_permissions": [
+    "https://www.youtube.com/*" ,
+     "http://localhost:5000/*"   
+  ],
   "background": {
     "service_worker": "background.js"
   },

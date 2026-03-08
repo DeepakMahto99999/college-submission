@@ -172,4 +172,28 @@ You would have orphan sessions.
 4.AI approves → status becomes RUNNING
 5.Extension sends heartbeats → heartbeatFocus
 6.Timer ends → completeSession
-7.Or user resets → resetSession
+7.Or user resets → resetSession 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 6️ One More Thing You Must Do
+
+Your dashboard toggles must save values into chrome storage like this:
+
+chrome.storage.sync.set({
+  hideShorts: true
+});
+
+Without this, extension will never receive the toggle values.

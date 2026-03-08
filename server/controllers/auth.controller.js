@@ -20,7 +20,7 @@ const setAuthCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: false,   // since you're on http
-    sameSite: "lax",  // IMPORTANT
+    sameSite: "none",  // IMPORTANT
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
 };

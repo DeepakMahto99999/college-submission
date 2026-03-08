@@ -1,55 +1,133 @@
-let timer = null;
-let mode = "idle";
-let timeLeft = 0;
+/* ===================================
+   FOCUSTUBE BACKGROUND (TIMESTAMP TIMER)
+=================================== */
 
-function updateStorage() {
-  chrome.storage.sync.set({
-    pomodoroMode: mode,
-    pomodoroTimeLeft: timeLeft
+/* ========= COMPLETE SESSION ========= */
+
+async function completeSession() {
+
+  const { sessionId } = await chrome.storage.sync.get("sessionId");
+  if (!sessionId) return;
+
+  try {
+
+    await fetch("http://localhost:5000/api/sessions/complete", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId })
+    });
+
+  } catch (err) {
+
+    console.log("Complete error:", err);
+
+  }
+
+}
+
+/* ========= START FOCUS ========= */
+
+async function startFocus() {
+
+  const startTimestamp = Date.now();
+  const focusLength = 2 * 60 * 1000;
+
+  await chrome.storage.sync.set({
+    pomodoroMode: "focus",
+    startTimestamp,
+    focusLength
   });
+
 }
 
-function startFocus() {
-  mode = "focus";
-  timeLeft = 25 * 60;
-  runTimer();
+/* ========= START BREAK ========= */
+
+async function startBreak() {
+
+  const startTimestamp = Date.now();
+  const focusLength = 5 * 60 * 1000;
+
+  await chrome.storage.sync.set({
+    pomodoroMode: "break",
+    startTimestamp,
+    focusLength
+  });
+
 }
 
-function startBreak() {
-  mode = "break";
-  timeLeft = 5 * 60;
-  runTimer();
-}
+/* ========= TIMER CHECK ========= */
 
-function runTimer() {
-  if (timer) clearInterval(timer);
+async function runTimer() {
 
-  updateStorage();
+  const { startTimestamp, focusLength, pomodoroMode } =
+    await chrome.storage.sync.get([
+      "startTimestamp",
+      "focusLength",
+      "pomodoroMode"
+    ]);
 
-  timer = setInterval(() => {
-    timeLeft--;
-    updateStorage();
+  if (!startTimestamp || !focusLength) return;
 
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      if (mode === "focus") {
-        startBreak();
-      } else {
-        startFocus();
-      }
+  const elapsed = Date.now() - startTimestamp;
+  const remaining = focusLength - elapsed;
+
+  if (remaining <= 0) {
+
+    if (pomodoroMode === "focus") {
+
+      await completeSession();
+      await startBreak();
+
+    } else {
+
+      await chrome.storage.sync.set({
+        pomodoroMode: "idle",
+        startTimestamp: null,
+        focusLength: null
+      });
+
     }
-  }, 1000);
+
+    return;
+
+  }
+
+  const secondsLeft = Math.floor(remaining / 1000);
+
+  await chrome.storage.sync.set({
+    pomodoroTimeLeft: secondsLeft
+  });
+
 }
+
+/* ========= STOP TIMER ========= */
+
+async function stopTimer() {
+
+  await chrome.storage.sync.set({
+    pomodoroMode: "idle",
+    startTimestamp: null,
+    focusLength: null,
+    pomodoroTimeLeft: 0
+  });
+
+}
+
+/* ========= RUN TIMER EVERY SECOND ========= */
+
+setInterval(runTimer, 1000);
+
+/* ========= MESSAGE LISTENER ========= */
 
 chrome.runtime.onMessage.addListener((msg) => {
+
   if (msg.action === "startFocus") {
     startFocus();
   }
 
   if (msg.action === "stopTimer") {
-    if (timer) clearInterval(timer);
-    mode = "idle";
-    timeLeft = 0;
-    updateStorage();
+    stopTimer();
   }
+
 });
