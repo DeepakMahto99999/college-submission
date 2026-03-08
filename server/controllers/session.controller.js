@@ -37,7 +37,7 @@ export const getCurrentSession = asyncHandler(async (req, res) => {
 
 export const startSession = asyncHandler(async (req, res) => {
 
-  const userId = "69aaba7b4a4ae44fa95808cc";
+  const userId = req.user.userId;
   const { topicName } = req.body;
 
   if (!topicName) {
@@ -76,7 +76,7 @@ export const startSession = asyncHandler(async (req, res) => {
 
 export const completeSession = asyncHandler(async (req, res) => {
 
-  const userId = "69aaba7b4a4ae44fa95808cc";
+  const userId = req.user.userId;
   const { sessionId } = req.body;
 
   const session = await Session.findOne({
@@ -144,7 +144,7 @@ export const invalidSession = asyncHandler(async (req, res) => {
 
 export const cancelSession = asyncHandler(async (req, res) => {
 
-  const userId = "69aaba7b4a4ae44fa95808cc"; 
+  const userId = req.user.userId;
   const { sessionId } = req.params;
 
   const session = await Session.findOne({

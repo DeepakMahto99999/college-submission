@@ -11,14 +11,14 @@ import {
 
 const router = express.Router();
 
-router.get("/current",  getCurrentSession);
+router.get("/current", authUser, getCurrentSession);
 
-router.post("/start",  startSession);
+router.post("/start", authUser, startSession);
 
-router.post("/complete",  completeSession);
+router.post("/complete", authUser, completeSession);
 
-router.post("/invalid",  invalidSession); 
+router.post("/invalid", authUser, invalidSession);
 
-router.post("/cancel/:sessionId", cancelSession);
+router.post("/cancel/:sessionId", authUser, cancelSession);
 
 export default router;
