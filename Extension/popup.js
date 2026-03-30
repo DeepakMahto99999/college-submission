@@ -54,7 +54,7 @@ async function startSession() {
   });
 
   try {
-    const res = await fetch("http://localhost:5000/api/sessions/start", {
+    const res = await fetch("https://focustube-college-backend.onrender.com/api/sessions/start", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -97,7 +97,7 @@ stopBtn.onclick = async () => {
     try {
 
       await fetch(
-        `http://localhost:5000/api/sessions/cancel/${sessionId}`,
+        `https://focustube-college-backend.onrender.com/api/sessions/cancel/${sessionId}`,
         {
           method: "POST",
           credentials: "include"

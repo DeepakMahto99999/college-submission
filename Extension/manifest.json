@@ -5,7 +5,8 @@
   "permissions": ["storage" ],
   "host_permissions": [
     "https://www.youtube.com/*" ,
-     "http://localhost:5000/*"   
+     "http://localhost:5000/*" ,
+     "https://focustube-college-backend.onrender.com"  
   ],
   "background": {
     "service_worker": "background.js"

@@ -192,7 +192,7 @@ async function markInvalidSession() {
   if (!sessionId) return;
 
   try {
-    await fetch("http://localhost:5000/api/sessions/invalid", {
+    await fetch("https://focustube-college-backend.onrender.com/api/sessions/invalid", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
