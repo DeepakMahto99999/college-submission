@@ -2,6 +2,7 @@ import Session from "../models/Session.model.js";
 import User from "../models/User.model.js";
 import asyncHandler from "../middlewares/asyncHandler.middleware.js";
 import AppError from "../utils/AppError.js";
+import { checkAndUnlockAchievements } from "./achievements.controller.js";
 
 
 /* =====================================================
@@ -154,7 +155,10 @@ export const completeSession = asyncHandler(async (req, res) => {
   user.totalFocusMinutes += session.focusLength;
   user.points += 50;
 
-  await user.save();
+  await user.save(); 
+
+  await checkAndUnlockAchievements(userId, session);
+  console.log("ACHIEVEMENT FUNCTION TRIGGERED");
 
   res.json({ success: true });
 
