@@ -37,10 +37,17 @@ app.use(
 );
 
 app.use(cors({
-    origin: [
-        process.env.CLIENT_URL,
-        "chrome-extension://*"
-    ],
+    origin: (origin, callback) => {
+        if (
+            !origin || // allow Postman / server calls
+            origin === process.env.CLIENT_URL ||
+            origin.startsWith("chrome-extension://")
+        ) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 }));
 
@@ -57,7 +64,7 @@ app.use("/api/achievements", achievementRoutes);
 app.use("/api/dashboard", dashboardRoutes)
 app.use("/api/leaderboard", leaderboardRoutes)
 app.use("/api/statistics", statisticsRoutes)
-app.use("/api/settings",settingsRoutes)
+app.use("/api/settings", settingsRoutes)
 
 app.use(errorHandler);
 

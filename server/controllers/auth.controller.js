@@ -17,10 +17,12 @@ const generateToken = (userId) => {
 
 //  COOKIE SETTER (Reusable)
 const setAuthCookie = (res, token) => {
+  const isProd = process.env.NODE_ENV === "production";
+
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false,   // since you're on http
-    sameSite: "lax",  // IMPORTANT
+    secure: isProd,          // false here 
+    sameSite: isProd ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
 };
@@ -32,7 +34,7 @@ const SALT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
 
 export const registerUser = asyncHandler(async (req, res) => {
 
-  const { name, email, password } = req.body; 
+  const { name, email, password } = req.body;
 
   console.log("REQ BODY IN CONTROLLER:", req.body);
 
@@ -119,7 +121,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
     success: true,
     message: "Logged out"
   });
-}); 
+});
 
 export const getMe = asyncHandler(async (req, res) => {
   const user = await UserModel.findById(req.user.userId)
