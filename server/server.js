@@ -16,6 +16,7 @@ import { apiLimiter } from './middlewares/rateLimit.middleware.js';
 import { requestLogger } from './middlewares/requestLogger.middleware.js';
 import { errorHandler } from './middlewares/errorHandler.middleware.js';
 import logger from './utils/logger.js';
+import settingsRoutes from "./routes/settings.routes.js";
 
 
 const app = express();
@@ -56,6 +57,7 @@ app.use("/api/achievements", achievementRoutes);
 app.use("/api/dashboard", dashboardRoutes)
 app.use("/api/leaderboard", leaderboardRoutes)
 app.use("/api/statistics", statisticsRoutes)
+app.use("/api/settings",settingsRoutes)
 
 app.use(errorHandler);
 

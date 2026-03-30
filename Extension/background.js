@@ -114,6 +114,39 @@ async function stopTimer() {
 
 }
 
+
+async function syncSettings() {
+
+  try {
+
+    const res = await fetch(
+      "http://localhost:5000/api/settings",
+      {
+        credentials: "include"
+      }
+    );
+
+    const data = await res.json();
+
+    chrome.storage.sync.set({
+      hideShorts: data.settings.hideShorts,
+      hideHome: data.settings.hideHome,
+      hideComments: data.settings.hideComments,
+      hideRecommendations: data.settings.hideRecommendations,
+      hideSidebar: data.settings.hideSidebar
+    });
+
+  } catch (err) {
+
+    console.log("Settings sync failed", err);
+
+  }
+
+}
+
+setInterval(syncSettings, 5000);
+
+
 /* ========= RUN TIMER EVERY SECOND ========= */
 
 setInterval(runTimer, 1000);

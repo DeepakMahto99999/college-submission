@@ -110,6 +110,11 @@ stopBtn.onclick = async () => {
 
   }
 
+  await chrome.storage.sync.set({
+    focusTopic: "",   // clear topic
+    pomodoroMode: "idle"
+  });
+
   chrome.runtime.sendMessage({ action: "stopTimer" });
 
 };

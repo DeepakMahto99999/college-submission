@@ -25,6 +25,8 @@ import { formatTime } from "@/utils/formatTime";
 import { toast } from "@/hooks/use-toast";
 
 import { getCurrentSessionApi } from "@/api/session.api";
+import { updateSettingsApi } from "@/api/settings.api";
+import { getSettingsApi } from "@/api/settings.api";
 
 const Timer = () => {
   const { timerSettings, toggleSettings, updateToggleSettings } = useApp();
@@ -83,8 +85,8 @@ const Timer = () => {
     timerMode === "focus"
       ? timerSettings.focusDuration
       : timerMode === "shortBreak"
-      ? timerSettings.shortBreakDuration
-      : timerSettings.longBreakDuration;
+        ? timerSettings.shortBreakDuration
+        : timerSettings.longBreakDuration;
 
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
 
@@ -100,9 +102,8 @@ const Timer = () => {
 
       toast({
         title: "Focus session complete!",
-        description: `You've completed ${newSessions} session${
-          newSessions > 1 ? "s" : ""
-        } today.`,
+        description: `You've completed ${newSessions} session${newSessions > 1 ? "s" : ""
+          } today.`,
       });
 
       if (newSessions % 4 === 0) {
@@ -175,24 +176,25 @@ const Timer = () => {
       mode === "focus"
         ? timerSettings.focusDuration
         : mode === "shortBreak"
-        ? timerSettings.shortBreakDuration
-        : timerSettings.longBreakDuration
+          ? timerSettings.shortBreakDuration
+          : timerSettings.longBreakDuration
     );
   };
 
-  const enableAllToggles = () => {
-    updateToggleSettings({
+  const enableAllToggles = async () => {
+
+    const data = {
       hideShorts: true,
       hideHome: true,
       hideComments: true,
       hideRecommendations: true,
-      hideSidebar: true,
-    });
+      hideSidebar: true
+    };
 
-    toast({
-      title: "All distractions blocked!",
-      description: "Maximum focus mode enabled.",
-    });
+    await updateSettingsApi(data);
+
+    updateToggleSettings(data);
+
   };
 
   const toggleItems = [
@@ -202,6 +204,55 @@ const Timer = () => {
     { key: "hideRecommendations", label: "Hide Recommendations", icon: Layout },
     { key: "hideSidebar", label: "Hide Sidebar", icon: PanelLeft },
   ];
+
+
+  const toggleShorts = async (value) => {
+    await updateSettingsApi({
+      hideShorts: value
+    });
+  };
+
+  const toggleHome = async (value) => {
+    await updateSettingsApi({
+      hideHome: value
+    });
+  };
+
+  const toggleComments = async (value) => {
+    await updateSettingsApi({
+      hideComments: value
+    });
+  };
+
+  const toggleRecommendations = async (value) => {
+    await updateSettingsApi({
+      hideRecommendations: value
+    });
+  };
+
+  const toggleSidebar = async (value) => {
+    await updateSettingsApi({
+      hideSidebar: value
+    });
+  };
+
+  useEffect(() => {
+
+    const loadSettings = async () => {
+
+      const res = await getSettingsApi();
+
+      setHideShorts(res.data.settings.hideShorts);
+      setHideHome(res.data.settings.hideHome);
+      setHideComments(res.data.settings.hideComments);
+      setHideRecommendations(res.data.settings.hideRecommendations);
+      setHideSidebar(res.data.settings.hideSidebar);
+
+    };
+
+    loadSettings();
+
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -223,11 +274,10 @@ const Timer = () => {
               <button
                 key={mode}
                 onClick={() => switchMode(mode)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                  timerMode === mode
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium ${timerMode === mode
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground"
+                  }`}
               >
                 {mode}
               </button>
@@ -285,9 +335,17 @@ const Timer = () => {
               </div>
               <Switch
                 checked={toggleSettings[key]}
-                onCheckedChange={(checked) =>
-                  updateToggleSettings({ [key]: checked })
-                }
+                onCheckedChange={(checked) => {
+
+                  updateToggleSettings({ [key]: checked });
+
+                  if (key === "hideShorts") toggleShorts(checked);
+                  if (key === "hideHome") toggleHome(checked);
+                  if (key === "hideComments") toggleComments(checked);
+                  if (key === "hideRecommendations") toggleRecommendations(checked);
+                  if (key === "hideSidebar") toggleSidebar(checked);
+
+                }}
               />
             </div>
           ))}
