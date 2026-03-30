@@ -92,15 +92,66 @@ export const completeSession = asyncHandler(async (req, res) => {
     return res.json({ success: true });
   }
 
+  // ================= COMPLETE SESSION =================
+  // ================= COMPLETE SESSION =================
   session.status = "COMPLETED";
   session.completed = true;
 
+  // ✅ HARD FIX (NO TRUST ON DATA)
+  const focusMinutes = Number(session.focusLength) || 25;
+
+  session.totalFocusSeconds = focusMinutes * 60;
+
+  // 🔥 DEBUG (IMPORTANT)
+  console.log("FOCUS LENGTH:", focusMinutes);
+  console.log("TOTAL SECONDS SET:", session.totalFocusSeconds);
+
   await session.save();
 
+  // ================= USER UPDATE =================
   const user = await User.findById(userId);
 
+  const today = new Date();
+  const todayStart = new Date(today);
+  todayStart.setHours(0, 0, 0, 0);
+
+  let lastDate = user.lastSessionDate
+    ? new Date(user.lastSessionDate)
+    : null;
+
+  if (lastDate) {
+    const lastDateStart = new Date(lastDate);
+    lastDateStart.setHours(0, 0, 0, 0);
+
+    const diff = Math.floor(
+      (todayStart.getTime() - lastDateStart.getTime()) /
+      (1000 * 60 * 60 * 24)
+    );
+
+    if (diff === 0) {
+      // ✅ same day → do nothing (keep streak)
+    }
+    else if (diff === 1) {
+      user.currentStreak += 1;
+    }
+    else {
+      user.currentStreak = 1;
+    }
+
+  } else {
+    user.currentStreak = 1;
+  }
+
+  user.longestStreak = Math.max(
+    user.longestStreak,
+    user.currentStreak
+  );
+
+  user.lastSessionDate = new Date();
+
+  // ================= STATS =================
   user.totalSessions += 1;
-  user.totalFocusMinutes += 25;
+  user.totalFocusMinutes += session.focusLength;
   user.points += 50;
 
   await user.save();

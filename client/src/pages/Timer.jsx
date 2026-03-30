@@ -198,7 +198,6 @@ const Timer = () => {
   };
 
   const toggleItems = [
-    { key: "hideShorts", label: "Hide Shorts", icon: Tv },
     { key: "hideHome", label: "Hide Home", icon: Home },
     { key: "hideComments", label: "Hide Comments", icon: MessageSquare },
     { key: "hideRecommendations", label: "Hide Recommendations", icon: Layout },
@@ -258,10 +257,8 @@ const Timer = () => {
     <div className="container mx-auto px-4 py-8">
 
       {/* STATUS TEXT */}
-      <p className="text-sm text-muted-foreground mb-6 text-center">
-        {sessionStatus === "WAITING" && "Waiting for valid video..."}
-        {sessionStatus === "ACTIVE" && "Focus session active"}
-        {sessionStatus === "INVALID" && "Session stopped due to topic mismatch"}
+      <p className="font-bold text-2xl text-muted-foreground mb-2 text-center">
+       Be focused. Stay focused.
       </p>
 
       <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">

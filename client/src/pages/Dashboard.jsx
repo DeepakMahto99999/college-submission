@@ -201,7 +201,7 @@ const Dashboard = () => {
               className="flex justify-between bg-muted/50 p-3 rounded-lg"
             >
               <span>{s.topic}</span>
-              <span className="text-muted-foreground">
+              <span className="text-green-500">
                 {s.statusLabel}
               </span>
             </div>

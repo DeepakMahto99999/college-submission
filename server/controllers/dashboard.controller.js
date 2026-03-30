@@ -98,10 +98,10 @@ export const getDashboardOverview = asyncHandler(async (req, res) => {
 
     if (!s.startTime) return;
 
-    const day = s.startTime.toLocaleDateString(
-      "en-US",
-      { weekday: "short" }
-    );
+    const dayIndex = new Date(s.startTime).getDay();
+
+    const map = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const day = map[dayIndex];
 
     const minutes = (s.totalFocusSeconds || 0) / 60;
 
@@ -120,9 +120,9 @@ export const getDashboardOverview = asyncHandler(async (req, res) => {
     status: s.status,
     statusLabel:
       s.status === "COMPLETED" ? "Completed" :
-      s.status === "INVALID" ? "Stopped" :
-      s.status === "RUNNING" ? "Running" :
-      "Not Started"
+        s.status === "INVALID" ? "Stopped" :
+          s.status === "RUNNING" ? "Running" :
+            "Not Started"
   }));
 
   // ================= INSIGHTS =================

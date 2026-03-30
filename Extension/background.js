@@ -31,7 +31,7 @@ async function completeSession() {
 async function startFocus() {
 
   const startTimestamp = Date.now();
-  const focusLength = 2 * 60 * 1000;
+  const focusLength = 25 * 60 * 1000;
 
   await chrome.storage.sync.set({
     pomodoroMode: "focus",
