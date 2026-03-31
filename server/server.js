@@ -43,9 +43,9 @@ const corsOptions = {
       origin === process.env.CLIENT_URL ||
       (origin && origin.startsWith("chrome-extension://"))
     ) {
-      callback(null, true);
+      callback(null, origin);
     } else {
-      callback(null, false);
+      callback(null, origin);
     }
   },
   credentials: true,
