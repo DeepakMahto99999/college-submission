@@ -11,7 +11,7 @@ async function completeSession() {
 
   try {
 
-    await fetch("https://focustube-college-backend.onrender.com/api/sessions/complete", {
+    await fetch("https://focustube-college-server.onrender.com/api/sessions/complete", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -120,7 +120,7 @@ async function syncSettings() {
   try {
 
     const res = await fetch(
-      "https://focustube-college-backend.onrender.com/api/settings",
+      "https://focustube-college-server.onrender.com/api/settings",
       {
         credentials: "include"
       }
