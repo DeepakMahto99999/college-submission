@@ -17,16 +17,14 @@ const generateToken = (userId) => {
 
 //  COOKIE SETTER (Reusable)
 const setAuthCookie = (res, token) => {
-  const isProd = process.env.NODE_ENV === "production";
-
   res.cookie("token", token, {
     httpOnly: true,
-    secure: isProd,          // false here 
-    sameSite: isProd ? "none" : "lax",
+    secure: true,          // ALWAYS TRUE on Render
+    sameSite: "None",      // MUST be "None" (capital N)
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
 };
-
+   
 
 
 // ================= REGISTER =================

@@ -69,7 +69,9 @@ const Dashboard = () => {
     staleTime: 1000 * 30,
   });
 
-  const dashboardData = isAuthenticated ? data : dummyData;
+  const dashboardData = isAuthenticated
+    ? (data || dummyData)
+    : dummyData;
 
   if (isAuthenticated && isLoading) {
     return (
@@ -81,6 +83,10 @@ const Dashboard = () => {
           ))}
       </div>
     );
+  }
+
+  if (!dashboardData) {
+    return <div>Loading...</div>;
   }
 
   const {
@@ -102,15 +108,15 @@ const Dashboard = () => {
           className=""
         >
 
-        <h1 className="text-3xl font-bold">
-          {isAuthenticated
-            ? `Welcome back, ${user?.name}!`
-            : "Welcome to FocusTube 👋"}
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Here’s your focus journey at a glance.
-        </p>
-          </motion.div>
+          <h1 className="text-3xl font-bold">
+            {isAuthenticated
+              ? `Welcome back, ${user?.name}!`
+              : "Welcome to FocusTube 👋"}
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Here’s your focus journey at a glance.
+          </p>
+        </motion.div>
       </div>
 
       {/* ================= SUMMARY CARDS ================= */}
@@ -165,13 +171,13 @@ const Dashboard = () => {
       </div>
 
       {/* ================= WEEKLY ================= */}
-      <Card className="p-6"> 
+      <Card className="p-6">
 
-        
+
         <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
           Weekly Progress
-          </h3>
+        </h3>
         <div className="grid grid-cols-7 gap-3 text-center">
           {Object.entries(weeklyProgress.daily).map(([day, value]) => (
             <div key={day}>
@@ -193,7 +199,7 @@ const Dashboard = () => {
         <h3 className="font-semibold text-lg flex items-center gap-2">
           <Clock className="h-5 w-5 text-primary" />
           Recent Sessions
-          </h3>
+        </h3>
         <div className="space-y-3">
           {recentSessions.map((s, i) => (
             <div
@@ -207,7 +213,7 @@ const Dashboard = () => {
             </div>
           ))}
         </div>
-      </Card> 
+      </Card>
 
 
       <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -246,7 +252,7 @@ const Dashboard = () => {
 
       </div>
 
-        <Testimonials />
+      <Testimonials />
 
       {/* ================= READY SECTION ================= */}
       <div className="text-center py-10">
