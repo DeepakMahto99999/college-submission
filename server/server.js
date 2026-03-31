@@ -36,20 +36,24 @@ app.use(
     })
 );
 
-app.use(cors({
-    origin: (origin, callback) => {
-        if (
-            !origin || // allow Postman / server calls
-            origin === process.env.CLIENT_URL ||
-            origin.startsWith("chrome-extension://")
-        ) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    credentials: true
-}));
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (
+      !origin ||
+      origin === process.env.CLIENT_URL ||
+      (origin && origin.startsWith("chrome-extension://"))
+    ) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(requestLogger)
 app.use("/api", apiLimiter);
@@ -69,5 +73,5 @@ app.use("/api/settings", settingsRoutes)
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-    logger.info(`Server running on port http://localhost:${PORT}`)
+    logger.info(`Server running on port ${PORT}`)
 })
