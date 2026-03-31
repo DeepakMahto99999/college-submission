@@ -69,7 +69,8 @@ const Dashboard = () => {
     staleTime: 1000 * 30,
   });
 
-  const dashboardData =  isAuthenticated ? data : dummyData;
+  const dashboardData =
+  isAuthenticated && data ? data : dummyData;
 
   if (isAuthenticated && isLoading) {
     return (

@@ -36,23 +36,28 @@ app.use(
     })
 );
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (
-      !origin ||
-      origin === process.env.CLIENT_URL ||
-      (origin && origin.startsWith("chrome-extension://"))
-    ) {
-      callback(null, origin);
-    } else {
-      callback(null, origin);
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-};
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     if (
+//       !origin ||
+//       origin === process.env.CLIENT_URL ||
+//       (origin && origin.startsWith("chrome-extension://"))
+//     ) {
+//       callback(null, origin);
+//     } else {
+//       callback(null, origin);
+//     }
+//   },
+//   credentials: true,
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions)); 
+
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
 
 app.use(requestLogger)
 app.use("/api", apiLimiter);
